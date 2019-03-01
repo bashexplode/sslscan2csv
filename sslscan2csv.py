@@ -14,7 +14,7 @@ class CSVCreate:
         self.root = root
 
     def write(self):
-        head = ['IP', 'Port', 'Vulnerable to Heartbleed', 'TLS Compression', 'TLS Session Renegotiation', 'Certificate Subject Domain', "Certificate Alt Domain Names", "Certificate Expiration", "Supported SSL Version", "SSL Version Status", "SSL Cipher Bits", "SSL Cipher"]
+        head = ['IP', 'Port', 'Vulnerable to Heartbleed', 'TLS Compression', 'TLS Session Renegotiation', 'Certificate Subject Domain', "Certificate Alt Domain Names", "Certificate Expiration","Signature Algorithm","PK Error" , "PK Type","PK Bits","Certificate Issuer" ,"Self-Signed" ,"Valid Start" ,"Valid End" , "Supported SSL Version", "SSL Version Status", "SSL Cipher Bits", "SSL Cipher","cipher detail"]
 
         self.csvwriter.writerow(head)
 
@@ -64,11 +64,19 @@ class CSVCreate:
                 else:
                     altnames = "No Alternative Domain Names"
 
-
                 if ssltest.find('certificate').find('expired').text is 'true':
                     expired = "Certificate is expired"
                 else:
                     expired = "Certificate is live"
+
+                signaturealgorithm = ssltest.find('certificate').find('signature-algorithm').text
+                pk_error = ssltest.find('certificate').find('pk').attrib['error']
+                pk_type = ssltest.find('certificate').find('pk').attrib['type']
+                pk_bits = ssltest.find('certificate').find('pk').attrib['bits']
+                issuer = ssltest.find('certificate').find('issuer').text
+                certselfsigned = ssltest.find('certificate').find('self-signed').text
+                validstart = ssltest.find('certificate').find('not-valid-before').text
+                validend = ssltest.find('certificate').find('not-valid-after').text
           
             except AttributeError:
                     pass
@@ -81,6 +89,21 @@ class CSVCreate:
                 status = cipherinfo.attrib['status']
                 bits = cipherinfo.attrib['bits']
                 cipher = cipherinfo.attrib['cipher']
+                
+                cipherdetail = ""
+
+                try:
+                    curve = cipherinfo.attrib['curve']
+                    ecdhebits = cipherinfo.attrib['ecdhebits']
+                    cipherdetail = "Curve " + curve + " ECDHE " + ecdhebits
+                except KeyError:
+                    pass
+                try: 
+                    dhebits = cipherinfo.attrib['dhebits']
+                    cipherdetail = "DHE " + dhebits + " bits"
+                except KeyError:
+                    pass
+
                 row.append(ip)
                 row.append(port)
                 row.append(heartbleed)
@@ -89,10 +112,19 @@ class CSVCreate:
                 row.append(certificate)
                 row.append(altnames)
                 row.append(expired)
+                row.append(signaturealgorithm)
+                row.append(pk_error)
+                row.append(pk_type)
+                row.append(pk_bits)
+                row.append(issuer)
+                row.append(certselfsigned)
+                row.append(validstart)
+                row.append(validend)
                 row.append(sslversion)
                 row.append(status)
                 row.append(bits)
                 row.append(cipher)
+                row.append(cipherdetail)
 
                 self.csvwriter.writerow(row)
         self.f.close()
