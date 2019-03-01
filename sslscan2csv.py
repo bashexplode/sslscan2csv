@@ -48,24 +48,30 @@ class CSVCreate:
             else:
                 renogotation = "Server does not support session renegotiation"
 
-            if ',' in ssltest.find('certificate').find('subject').text:
-                certificate = ";".join(ssltest.find('certificate').find('subject').text.split(','))
-            else:
-                certificate = ssltest.find('certificate').find('subject').text
+            try:
 
-            if isinstance(ssltest.find('certificate').find('altnames'), ElementTree.Element):
-                if ',' in ssltest.find('certificate').find('altnames').text:
-                    altnames = ";".join(ssltest.find('certificate').find('altnames').text.split(','))
+                if ',' in ssltest.find('certificate').find('subject').text:
+                    certificate = ";".join(ssltest.find('certificate').find('subject').text.split(','))
+
                 else:
-                    altnames = ssltest.find('certificate').find('altnames').text
-            else:
-                altnames = "No Alternative Domain Names"
+                    certificate = ssltest.find('certificate').find('subject').text
+            
+                if isinstance(ssltest.find('certificate').find('altnames'), ElementTree.Element):
+                    if ',' in ssltest.find('certificate').find('altnames').text:
+                        altnames = ";".join(ssltest.find('certificate').find('altnames').text.split(','))
+                    else:
+                        altnames = ssltest.find('certificate').find('altnames').text
+                else:
+                    altnames = "No Alternative Domain Names"
 
 
-            if ssltest.find('certificate').find('expired').text is 'true':
-                expired = "Certificate is expired"
-            else:
-                expired = "Certificate is live"
+                if ssltest.find('certificate').find('expired').text is 'true':
+                    expired = "Certificate is expired"
+                else:
+                    expired = "Certificate is live"
+          
+            except AttributeError:
+                    pass
 
 
             for cipherinfo in ssltest.iter('cipher'):
