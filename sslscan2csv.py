@@ -25,7 +25,7 @@ class CSVCreate:
 
             heartbleedvulnerability = []
             for hvuln in ssltest.iter('heartbleed'):
-                if hvuln.attrib['vulnerable'] is 1:
+                if int(hvuln.attrib['vulnerable']) is 1:
                     heartbleedvulnerability.append(hvuln.attrib['sslversion'])
             if heartbleedvulnerability:
                 if len(heartbleedvulnerability) > 1:
@@ -34,14 +34,14 @@ class CSVCreate:
                     heartbleed = "[!] " + str(heartbleedvulnerability) + " is vulnerable to heartbleed"
             else:
                 heartbleed = "No"
-
-            if ssltest.find('compression').attrib['supported'] is 0:
+            
+            if int(ssltest.find('compression').attrib['supported']) is 0:
                 compression = "Compression disabled"
             else:
                 compression = "[!] Compression enabled"
 
-            if ssltest.find('renegotiation').attrib['supported'] is 1:
-                if ssltest.find('renegotiation').attrib['secure'] is 1:
+            if int(ssltest.find('renegotiation').attrib['supported']) is 1:
+                if int(ssltest.find('renegotiation').attrib['secure']) is 1:
                     renogotation = "Secure session renegotiation supported"
                 else:
                     renogotation = "[!] Insecure session renegotiation supported"
@@ -131,3 +131,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("You killed it.")
         sys.exit()
+
