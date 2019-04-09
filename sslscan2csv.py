@@ -1,4 +1,6 @@
-# Script by Jesse Nebling
+# Script by Jesse Nebling (@bashexplode)
+# Additional contributors:
+# Piotr Marszalik (@addenial)
 
 from xml.etree import ElementTree
 import csv
