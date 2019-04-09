@@ -1,6 +1,8 @@
 # Coded by Jesse Nebling (@bashexplode)
 Convert SSLScan XML output to a CSV for easy grepping.
+
 Additional contributors:
+
 Piotr Marszalik (@addenial)
 
 #### License:
