@@ -16,7 +16,7 @@ class CSVCreate:
         self.root = root
 
     def write(self):
-        head = ['IP', 'Port', 'Vulnerable to Heartbleed', 'TLS Compression', 'TLS Session Renegotiation', 'Certificate Subject Domain', "Certificate Alt Domain Names", "Certificate Expiration","Signature Algorithm","PK Error" , "PK Type","PK Bits","Certificate Issuer" ,"Self-Signed" ,"Valid Start" ,"Valid End" , "Supported SSL Version", "SSL Version Status", "SSL Cipher Bits", "SSL Cipher","cipher detail"]
+        head = ['IP', 'Port', 'Vulnerable to Heartbleed', 'TLS Compression', 'TLS Session Renegotiation', 'Certificate Subject Domain', "Certificate Alt Domain Names", "Certificate Expiration","Signature Algorithm","PK Error" , "PK Type","PK Bits","Certificate Issuer" ,"Self-Signed" ,"Valid Start" ,"Valid End" , "Supported SSL Version", "SSL Version Status", "SSL Cipher Bits", "SSL Cipher", "Cipher Detail"]
 
         self.csvwriter.writerow(head)
 
@@ -67,7 +67,7 @@ class CSVCreate:
                     altnames = "No Alternative Domain Names"
 
                 if ssltest.find('certificate').find('expired').text is 'true':
-                    expired = "Certificate is expired"
+                    expired = "[!] Certificate is expired"
                 else:
                     expired = "Certificate is live"
 
@@ -79,6 +79,9 @@ class CSVCreate:
                 certselfsigned = ssltest.find('certificate').find('self-signed').text
                 validstart = ssltest.find('certificate').find('not-valid-before').text
                 validend = ssltest.find('certificate').find('not-valid-after').text
+                
+                if certselfsigned is "true":
+                    certselfsigned = "[!] True"
           
             except AttributeError:
                     pass
